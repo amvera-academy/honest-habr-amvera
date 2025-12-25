@@ -1,0 +1,15 @@
+---
+version: null
+meta:
+  environment: python
+  toolchain:
+    name: pip
+    version: 3.11
+build:
+  requirementsPath: requirements.txt
+  useCache: true
+run:
+  persistenceMount: /data
+  containerPort: 8000
+  command: uvicorn app:app --reload --host 0.0.0.0 --port 8000
+serviceType: compute

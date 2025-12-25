@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Честная лента</title>
+
+  <style>
+    :root {
+      --text-main: hsl(0, 0%, 87%);
+      --text-secondary: hsl(0, 0%, 67%);
+      --text-inactive: hsl(0, 0%, 67%);
+      --icon-primary: hsl(0, 0%, 40%);
+      --icon-secondary: hsl(201, 16%, 50%);
+      --background-primary: hsl(0, 0%, 9%);
+      --background-secondary: hsl(0, 0%, 15%);
+      --background-gray: hsl(0, 0%, 3%);
+      --background-orange: hsl(356, 41%, 16%);
+      --background-green: hsl(78, 51%, 16%);
+      --background-blue: hsl(201, 21%, 13%);
+      --other-disabled-elements: hsl(0, 0%, 30%);
+      --other-overlay-shadows: hsl(0, 0%, 100%);
+      --accent-primary: hsl(200, 80%, 61%);
+      --accent-primary-hover: hsl(199, 100%, 75%);
+      --accent-positive: hsl(76, 100%, 35%);
+      --accent-positive-hover: hsl(89, 45%, 56%);
+      --accent-danger: hsl(0, 100%, 73%);
+      --comments-author: hsl(88, 39%, 13%);
+      --comments-new: hsl(211, 50%, 20%);
+      --comments-moderation: hsl(352, 31%, 29%);
+      --comments-user: hsl(36, 88%, 13%);
+      --complexity-low: hsl(140, 45%, 42%);
+      --complexity-medium: hsl(200, 60%, 48%);
+      --complexity-high: hsl(350, 50%, 58%);
+      --label-dodger-blue: hsl(210, 100%, 68%);
+      --label-pelorous: hsl(185, 100%, 48%);
+      --label-deluge: hsl(239, 41%, 74%);
+      --label-apple: hsl(134, 74%, 71%);
+      --label-sorbus: hsl(30, 100%, 63%);
+      --label-mulberry: hsl(320, 67%, 64%);
+      --label-scarlet: hsl(0, 85%, 71%);
+      --label-dark-orchid: hsl(285, 100%, 68%);
+      --header-text: hsl(0, 0%, 100%);
+      --header-background: hsl(0, 0%, 5%);
+      --header-secondary-background: hsl(0, 0%, 3%);
+      --header-megapost-anakiwa: hsl(200, 75%, 74%);
+      --header-megapost-mint-green: hsl(128, 57%, 66%);
+      --header-megapost-pale-canary: hsl(60, 65%, 70%);
+      --header-megapost-mona-lisa: hsl(5, 100%, 76%);
+      --header-megapost-lavender-rose: hsl(305, 79%, 72%);
+      --cm-name: var(--accent-primary-hover);
+      --formula-filter: invert(1);
+      --rt-dc-bg-banner: #0e5186;
+      --rt-dc-bg-card: #e7eef3;
+      --rt-dc-bg-card-picked: #1f282d;
+      --rt-dc-bg-banner-gradient: linear-gradient(180deg, #5f2a9a -19%, #0e5186 75%);
+      --rt-dc-bg-main: #9552e0;
+      --rt-dc-bg-neutral: #fff;
+      --rt-dc-bg-button-main: var(--rt-dc-bg-main);
+      --rt-dc-bg-button-secondary: #201b24;
+      --rt-dc-bg-button-disabled: #105993;
+      --rt-dc-bg-button-main-hover: #5900bd;
+      --rt-dc-bg-button-secondary-hover: #151b1e;
+      --rt-dc-bg-card-level2: #d6e5f1;
+      --rt-dc-bg-card-picked-level2: #20384c;
+      --rt-dc-bg-card-level3: #acd0ed;
+      --rt-dc-bg-card-picked-level3: #1e496c;
+      --rt-dc-text-main: #fff;
+      --rt-dc-text-secondary: #263137;
+      --rt-dc-text-tertiary: #c8d5fa;
+      --rt-dc-text-additional: #9e9e9e;
+      --rt-dc-text-button-disabled: #3b75a3;
+      --rt-dc-stroke: rgba(255, 255, 255, 0.3);
+      --rt-dc-stroke-secondary: #fff;
+      --rt-box-shadow-main:
+        0 0 128.135px 0 rgba(169, 98, 254, 0.5),
+        0 0 6.102px 0 #a962fe,
+        0 0 3.051px 0 #5b00c8;
+      --rt-box-shadow-secondary: 0 0 45px 0 rgba(255, 255, 255, 0.7), 0 0 2px 0 #fff;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--background-gray);
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .more-wrap {
+      padding: 16px 0 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (min-width: 1024px) {
+      .tm-articles-list__item { width: 100%; }
+      .tm-post-snippet { max-width: 860px; margin: 0 auto; }
+    }
+
+    .loading-wrap {
+      width: 100%;
+      padding: 18px 0 10px;
+    }
+
+    .loading-card {
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(110deg, rgba(255,255,255,.06), rgba(255,255,255,.02), rgba(255,255,255,.06));
+      background-size: 200% 100%;
+      animation: loadingBg 2.8s linear infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -40%;
+      width: 60%;
+      height: 220%;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
+      animation: loadingShine 2.2s linear infinite;
+      pointer-events: none;
+    }
+
+    .loading-title {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .loading-sub {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .loading-dots {
+      display: inline-block;
+      min-width: 26px;
+    }
+
+    @keyframes loadingBg { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+    @keyframes loadingShine { 0% { left: -60%; } 100% { left: 140%; } }
+  </style>
+
+  <link rel="stylesheet" href="/static/habr/css/app.css" />
+
+  <style>
+    .tm-button-link{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:3px;border:1px solid;text-decoration:none;font-size:.8125rem;line-height:1rem;min-height:32px;box-sizing:border-box}.tm-button-link_color-christi{border-color:var(--accent-positive);background-color:var(--accent-positive);cursor:pointer}.tm-button-link_color-christi:focus,.tm-button-link_color-christi:hover{border-color:var(--accent-positive-hover);background-color:var(--accent-positive-hover)}.tm-button-link_styleType-transparent{border-color:var(--accent-positive);background-color:transparent;color:var(--accent-positive);cursor:pointer}.tm-button-link_styleType-transparent:focus,.tm-button-link_styleType-transparent:hover{border-color:var(--accent-positive-hover);background-color:transparent;color:var(--accent-positive-hover)}.tm-companies-rating__item{display:flex;align-items:center;text-decoration:none}.tm-companies-rating__item+.tm-companies-rating__item{margin-top:24px}.tm-companies-rating__avatar{flex:0;margin-right:12px}.tm-companies-rating__name,.tm-companies-rating__rating{font-size:.8125rem;font-weight:700;line-height:1.125rem}.tm-companies-rating__name{color:var(--text-main)}.tm-companies-rating__rating{color:var(--label-mulberry);margin-left:auto}.tm-base-checkbox{margin:0;padding:0;cursor:pointer}.tm-base-checkbox_disabled{cursor:default}.tm-base-checkbox__figure{box-sizing:border-box;position:relative;display:inline-block;width:18px;height:18px;border-radius:2px;border:1px solid var(--icon-secondary);background-color:var(--background-primary)}.tm-base-checkbox__input:focus-visible+.tm-base-checkbox__figure{box-shadow:0 0 0 2px var(--accent-primary-hover)}.tm-base-checkbox__input:checked+.tm-base-checkbox__figure,.tm-base-checkbox__input:indeterminate+.tm-base-checkbox__figure{background-color:var(--accent-primary);border-color:var(--accent-primary)}.tm-base-checkbox__figure:after{background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTI4IDAgMTIgMTUuOTk2IDQgOGwtNCA0IDEyIDEyTDMyIDR6Ii8+PC9zdmc+);background-size:cover;content:"";height:8px;left:50%;position:absolute;top:50%;transform:translate(-50%,-50%);width:10px;opacity:0}.tm-base-checkbox__figure:before{background-color:var(--background-primary);content:"";width:8px;height:2px;position:absolute;left:4px;top:7px;opacity:0}.tm-base-checkbox__input:checked+.tm-base-checkbox__figure:after{opacity:1}.tm-base-checkbox__input:indeterminate+.tm-base-checkbox__figure:before{opacity:1}.selection-label{display:flex;gap:8px;align-items:center;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;user-select:none}.selection-label__text{font-size:.875rem;line-height:1.125rem;color:var(--text-main)}.my-feed-filter__section,.my-feed-filter__section-legend{border:0;margin:0;padding:0}.my-feed-filter__form{display:grid;gap:16px;padding:16px 20px 20px}.my-feed-filter__section{display:block}.my-feed-filter__section-legend{font-size:.8125rem;font-weight:700;line-height:1.125rem;color:var(--text-main);margin-bottom:8px}.my-feed-filter__types{display:flex;gap:24px}.my-feed-filter__group{display:flex;gap:8px}.my-feed-filter__types .tm-labeled-checkbox__label{position:relative}.my-feed-filter__types .tm-labeled-checkbox__label:before{content:"";position:absolute;top:0;left:-8px;bottom:0;width:8px}.my-feed-filter .my-feed-filter__apply-button{width:104px}.my-feed-filter .tm-checkbox__real:focus+.tm-checkbox__fake{outline:var(--accent-primary-hover) auto 2px}@keyframes fadein{0%{opacity:0}to{opacity:1}}.my-feed-page__header-wrapper{display:flex;align-items:center;justify-content:space-between;padding-right:20px}@media(max-width:767px){.my-feed-page__header-wrapper{padding-right:16px}}.my-feed-page__settings-icon{color:currentColor}
+  </style>
+</head>
+
+<body>
+  <div class="tm-layout">
+    <div class="tm-layout__wrapper">
+      <div class="tm-page">
+        <div class="tm-page__top">
+          <div class="tm-page-width">
+            <div class="my-feed-page__header-wrapper">
+              <h1 class="tm-section-name tm-section-name_h1">
+                <span class="tm-section-name__text">Честная лента</span>
+              </h1>
+              <a
+                class="tm-button-link tm-button-link_color-christi"
+                href="https://habr.com/ru/feed"
+                target="_blank"
+                rel="noopener"
+                role="button"
+              >Отвлечься от рабочего дня</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tm-page__wrapper">
+          <div class="tm-page-width">
+            <div class="loading-wrap" id="loadingWrap" hidden>
+              <div class="loading-card">
+                <div class="loading-title">
+                  Заголовки обрабатываются нейросетью, пожалуйста, подождите<span class="loading-dots" id="loadingDots"></span>
+                </div>
+                <div class="loading-sub" id="loadingProgress"></div>
+              </div>
+            </div>
+
+            <div class="tm-page__main tm-page__main_has-sidebar">
+              <main class="tm-page__main-section">
+                <div class="tm-articles-list" id="feed"></div>
+
+                <div class="more-wrap" id="moreWrap" hidden>
+                  <button class="btn btn_solid btn_small tm-button_color-christi" id="moreBtn" type="button">
+                    Показать ещё
+                  </button>
+                </div>
+              </main>
+
+              <aside class="tm-page__sidebar">
+                <div class="tm-navigation-filters-spoiler my-feed-filter">
+                  <div class="tm-navigation-filters-spoiler__header">
+                    <button class="tm-navigation-filters-spoiler__button" id="filtersToggle" type="button">
+                      Фильтры
+                      <svg class="tm-svg-img icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor" d="M7 10l5 5 5-5z"></path>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div class="tm-navigation-filters-spoiler__content" id="filtersContent">
+                    <form class="my-feed-filter__form" id="filtersForm">
+                      <fieldset class="my-feed-filter__section">
+                        <legend class="my-feed-filter__section-legend">Тип публикации</legend>
+                        <div class="my-feed-filter__types">
+                          <label class="selection-label">
+                            <span class="tm-base-checkbox">
+                              <input class="tm-base-checkbox__input visually-hidden" name="types" tabindex="0" type="checkbox" value="articles" checked>
+                              <span class="tm-base-checkbox__figure"></span>
+                            </span>
+                            <span class="selection-label__text">Статьи</span>
+                          </label>
+                          <label class="selection-label">
+                            <span class="tm-base-checkbox">
+                              <input class="tm-base-checkbox__input visually-hidden" name="types" tabindex="0" type="checkbox" value="posts" checked>
+                              <span class="tm-base-checkbox__figure"></span>
+                            </span>
+                            <span class="selection-label__text">Посты</span>
+                          </label>
+                          <label class="selection-label">
+                            <span class="tm-base-checkbox">
+                              <input class="tm-base-checkbox__input visually-hidden" name="types" tabindex="0" type="checkbox" value="news" checked>
+                              <span class="tm-base-checkbox__figure"></span>
+                            </span>
+                            <span class="selection-label__text">Новости</span>
+                          </label>
+                        </div>
+                      </fieldset>
+
+                      <fieldset class="my-feed-filter__section">
+                        <legend class="my-feed-filter__section-legend">Порог рейтинга</legend>
+                        <div class="my-feed-filter__group">
+                          <label class="radio-like-button">
+                            <input checked class="radio-like-button__input visually-hidden" name="score" tabindex="0" type="radio" value="all">
+                            <span class="radio-like-button__button">Все</span>
+                          </label>
+                          <label class="radio-like-button">
+                            <input class="radio-like-button__input visually-hidden" name="score" tabindex="0" type="radio" value="0">
+                            <span class="radio-like-button__button">≥0</span>
+                          </label>
+                          <label class="radio-like-button">
+                            <input class="radio-like-button__input visually-hidden" name="score" tabindex="0" type="radio" value="10">
+                            <span class="radio-like-button__button">≥10</span>
+                          </label>
+                          <label class="radio-like-button">
+                            <input class="radio-like-button__input visually-hidden" name="score" tabindex="0" type="radio" value="25">
+                            <span class="radio-like-button__button">≥25</span>
+                          </label>
+                        </div>
+                      </fieldset>
+
+                      <button class="btn btn_solid btn_small tm-button_color-christi my-feed-filter__apply-button" type="submit">
+                        Применить
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const feedEl = document.getElementById('feed')
+    const formEl = document.getElementById('filtersForm')
+    const toggleEl = document.getElementById('filtersToggle')
+    const contentEl = document.getElementById('filtersContent')
+    const moreWrap = document.getElementById('moreWrap')
+    const moreBtn = document.getElementById('moreBtn')
+
+    const loadingWrap = document.getElementById('loadingWrap')
+    const loadingDots = document.getElementById('loadingDots')
+    const loadingProgress = document.getElementById('loadingProgress')
+
+    const pageSize = 6
+    let offset = 0
+    let lastParams = {}
+
+    let dotsTimer = 0
+    let progressTimer = 0
+
+    toggleEl.addEventListener('click', () => {
+      const isHidden = contentEl.style.display === 'none'
+      contentEl.style.display = isHidden ? '' : 'none'
+    })
+
+    function toText(v) {
+      const s = String(v ?? '')
+      const div = document.createElement('div')
+      div.innerHTML = s
+      return (div.textContent || '').trim()
+    }
+
+    function fmtDate(v) {
+      if (!v) return ''
+      const d = new Date(v)
+      if (Number.isNaN(d.getTime())) return ''
+      return d.toLocaleString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+    }
+
+    function extractTag(t) {
+      if (!t) return ''
+      if (typeof t === 'string') return t
+      return t.term || t.label || ''
+    }
+
+    function buildTags(tags) {
+      const list = Array.isArray(tags) ? tags : []
+      if (!list.length) return null
+
+      const wrap = document.createElement('div')
+      wrap.className = 'tm-publication-hubs__container tm-post-snippet__hubs'
+
+      const hubs = document.createElement('div')
+      hubs.className = 'tm-publication-hubs'
+
+      for (const t of list.slice(0, 6)) {
+        const name = extractTag(t)
+        if (!name) continue
+
+        const span = document.createElement('span')
+        span.className = 'tm-publication-hub__link-container'
+
+        const a = document.createElement('a')
+        a.className = 'tm-publication-hub__link'
+        a.href = '#'
+
+        const inner = document.createElement('span')
+        inner.textContent = name
+
+        a.appendChild(inner)
+        span.appendChild(a)
+        hubs.appendChild(span)
+      }
+
+      if (!hubs.children.length) return null
+
+      wrap.appendChild(hubs)
+      return wrap
+    }
+
+    function renderItem(item) {
+      const title = toText(item.title)
+      const author = toText(item.author || item.creator || '')
+      const summary = toText(item.summary || item.description || '')
+      const link = String(item.link || '#')
+      const published = item.published || item.pubDate || item.date || ''
+      const dateText = fmtDate(published)
+
+      const article = document.createElement('article')
+      article.className = 'tm-articles-list__item tm-articles-list__item_no-padding'
+      article.tabIndex = 0
+
+      const snippet = document.createElement('div')
+      snippet.className = 'tm-post-snippet'
+
+      const typeLabel = document.createElement('div')
+      typeLabel.className = 'publication-type-label publication-type-label_type-article'
+      const typeSpan = document.createElement('span')
+      typeSpan.className = 'publication-type-label__label publication-type-label__label_type-article'
+      typeSpan.textContent = 'Статья'
+      typeLabel.appendChild(typeSpan)
+
+      const meta = document.createElement('div')
+      meta.className = 'tm-post-snippet__meta'
+
+      const userInfo = document.createElement('span')
+      userInfo.className = 'tm-user-info tm-post-author-info'
+
+      const userDesc = document.createElement('span')
+      userDesc.className = 'tm-user-info__user tm-user-info__user_appearance-post'
+
+      if (author) {
+        const userLink = document.createElement('a')
+        userLink.className = 'tm-user-info__username'
+        userLink.href = '#'
+        userLink.textContent = author
+        userDesc.appendChild(userLink)
+      }
+
+      const metaRow = document.createElement('div')
+      metaRow.className = 'tm-post-author-info__meta-row'
+
+      if (dateText) {
+        const dateLink = document.createElement('a')
+        dateLink.className = 'tm-article-datetime-published tm-article-datetime-published_link'
+        dateLink.href = link
+
+        const timeEl = document.createElement('time')
+        const dt = new Date(published)
+        if (!Number.isNaN(dt.getTime())) timeEl.dateTime = dt.toISOString()
+        timeEl.title = dateText
+        timeEl.textContent = dateText
+
+        dateLink.appendChild(timeEl)
+        metaRow.appendChild(dateLink)
+      }
+
+      userDesc.appendChild(metaRow)
+      userInfo.appendChild(userDesc)
+      meta.appendChild(userInfo)
+
+      const h2 = document.createElement('h2')
+      h2.className = 'tm-title tm-title_h2'
+      const aTitle = document.createElement('a')
+      aTitle.className = 'tm-title__link'
+      aTitle.href = link
+      aTitle.textContent = title || link
+      h2.appendChild(aTitle)
+
+      snippet.appendChild(typeLabel)
+      snippet.appendChild(meta)
+      snippet.appendChild(h2)
+
+      const tagsBlock = buildTags(item.tags)
+      if (tagsBlock) snippet.appendChild(tagsBlock)
+
+      if (summary) {
+        const contentWrap = document.createElement('div')
+        contentWrap.className = 'tm-post-snippet__content-wrapper tm-post-snippet__content-wrapper_hide_gradient'
+
+        const content = document.createElement('div')
+        content.className = 'tm-post-snippet__content'
+
+        const body = document.createElement('div')
+        body.className = 'article-formatted-body article-formatted-body_version-2'
+
+        const p = document.createElement('p')
+        p.textContent = summary
+
+        body.appendChild(p)
+        content.appendChild(body)
+        contentWrap.appendChild(content)
+        snippet.appendChild(contentWrap)
+      }
+
+      article.appendChild(snippet)
+      return article
+    }
+
+    function setMoreVisible(v) { moreWrap.hidden = !v }
+    function setMoreLoading(v) { moreBtn.disabled = v; moreBtn.textContent = v ? 'Загрузка…' : 'Показать еще' }
+
+    function showLoading() {
+      loadingWrap.hidden = false
+
+      let i = 0
+      const dots = ['', '.', '..', '...']
+      clearInterval(dotsTimer)
+      dotsTimer = setInterval(() => { loadingDots.textContent = dots[i]; i = (i + 1) % dots.length }, 350)
+
+      clearInterval(progressTimer)
+      progressTimer = setInterval(() => {
+        fetch('/api/progress')
+          .then(r => r.json())
+          .then(p => {
+            const done = Number(p?.done || 0)
+            const total = Number(p?.total || 0)
+            if (!total) { loadingProgress.textContent = ''; return }
+            loadingProgress.textContent = 'Обработано ' + done + '/' + total + ' заголовков'
+          })
+          .catch(() => {})
+      }, 500)
+    }
+
+    function hideLoading() {
+      loadingWrap.hidden = true
+      clearInterval(dotsTimer)
+      clearInterval(progressTimer)
+      dotsTimer = 0
+      progressTimer = 0
+      loadingDots.textContent = ''
+      loadingProgress.textContent = ''
+    }
+
+    async function fetchPage(start) {
+      const qs = new URLSearchParams({ ...lastParams })
+      qs.set('offset', String(start))
+      qs.set('limit', String(pageSize))
+      const res = await fetch('/api/getArticles?' + qs.toString())
+      const data = await res.json()
+      const items = Array.isArray(data) ? data : (data.items || [])
+      const hasMore = !!(data && data.has_more)
+      return { items, hasMore }
+    }
+
+    async function loadFirst(params) {
+      lastParams = params || {}
+      offset = 0
+
+      setMoreVisible(false)
+      setMoreLoading(true)
+      feedEl.innerHTML = ''
+
+      showLoading()
+      const { items, hasMore } = await fetchPage(0)
+      hideLoading()
+
+      if (!items.length) {
+        const empty = document.createElement('div')
+        empty.className = 'tm-articles-list__item'
+        empty.textContent = 'Ничего не найдено'
+        feedEl.appendChild(empty)
+        setMoreVisible(false)
+        return
+      }
+
+      for (const item of items) feedEl.appendChild(renderItem(item))
+
+      offset += items.length
+
+      setMoreLoading(false)
+      setMoreVisible(hasMore)
+    }
+
+    moreBtn.addEventListener('click', async () => {
+      setMoreLoading(true)
+      const { items, hasMore } = await fetchPage(offset)
+      for (const item of items) feedEl.appendChild(renderItem(item))
+      offset += items.length
+      setMoreVisible(hasMore)
+      setMoreLoading(false)
+    })
+
+    formEl.addEventListener('submit', e => {
+      e.preventDefault()
+      const fd = new FormData(formEl)
+      loadFirst(Object.fromEntries(fd.entries()))
+    })
+
+    loadFirst({})
+  </script>
+</body>
+</html>
