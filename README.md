@@ -1,3 +1,6 @@
+<img width="614" height="780" alt="image" src="https://github.com/user-attachments/assets/b0d60dd7-a72b-4db4-af93-f07dcd772e44" />
+
+
 # Честная лента | Habr
 
 Для запуска рекомндуем облако Amvera Cloud - конфигурационный файл, необходимый для развертывания (`amvera.yml`) сохранен в репозитории. Для запуска вам понадобится лишь загрузить все файлы в Code (+prompt.txt в Data), добавить перечисленные ниже переменные окружения через интерфейс и добавить внешний домен.
@@ -19,3 +22,5 @@
 - `LOCK_STALE_SECONDS`: `900`
 
 ---
+
+<img width="1686" height="499" alt="image" src="https://github.com/user-attachments/assets/8cd244c4-3cfb-4820-b8ef-517cc9fbcec7" />
